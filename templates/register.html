@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register Complaint</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" />
+</head>
+<body class="register-bg">
+  <div class="container-fluid min-vh-100 d-flex align-items-center">
+    <div class="row w-100 justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="form-wrapper shadow-lg">
+          <h2 class="text-center mb-4 fw-bold">Register Complaint</h2>
+          <form method="POST" action="/register" enctype="multipart/form-data">
+
+            <div class="mb-3">
+              <label for="category" class="form-label">Complaint Category</label>
+              <select class="form-select" name="category" id="category" required>
+                <option value="" disabled selected>Select a category</option>
+                <option value="Water">Water</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Roads">Roads</option>
+                <option value="Garbage">Garbage</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Choose Input Method</label>
+              <div class="d-flex gap-3 flex-wrap">
+                <button type="button" class="btn btn-outline-success" id="recordBtn" onclick="toggleRecording()">🎙 Start Recording</button>
+                <input type="file" accept="audio/*" class="form-control w-auto" name="audio_file" id="audioUpload" onchange="disableMic()" />
+              </div>
+            </div>
+
+            <div class="mb-3" id="audioPreview" style="display:none;">
+              <label class="form-label">Recorded Audio Preview</label>
+              <audio id="playback" controls></audio>
+              <input type="hidden" name="recordedAudio" id="recordedAudio">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Submit Complaint</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Section -->
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+
+    const recordBtn = document.getElementById('recordBtn');
+    const audioUpload = document.getElementById('audioUpload');
+    const audioPreview = document.getElementById('audioPreview');
+    const playback = document.getElementById('playback');
+    const recordedAudioInput = document.getElementById('recordedAudio');
+
+    async function toggleRecording() {
+      if (audioUpload.files.length > 0) {
+        alert("Remove uploaded file to use microphone.");
+        return;
+      }
+
+      if (isRecording) {
+        mediaRecorder.stop();
+        recordBtn.textContent = "🎙 Start Recording";
+        recordBtn.classList.remove("btn-danger");
+        recordBtn.classList.add("btn-outline-success");
+        isRecording = false;
+      } else {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioURL = URL.createObjectURL(blob);
+          playback.src = audioURL;
+          audioPreview.style.display = "block";
+
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = () => {
+            recordedAudioInput.value = reader.result;
+          };
+        };
+
+        mediaRecorder.start();
+        recordBtn.textContent = "⏹ Stop Recording";
+        recordBtn.classList.remove("btn-outline-success");
+        recordBtn.classList.add("btn-danger");
+        isRecording = true;
+      }
+    }
+
+    function disableMic() {
+      if (isRecording) toggleRecording();
+      recordBtn.disabled = true;
+      audioPreview.style.display = "none";
+      playback.src = "";
+      recordedAudioInput.value = "";
+    }
+  </script>
+  <script>
+    // Check if redirected with a success flag
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('submitted') === 'true') {
+      alert("✅ Complaint submitted successfully!");
+    }
+  </script>
+  
+</body>
+</html>
