@@ -1,3 +1,15 @@
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content grows to fill space */
+main {
+  flex: 1;
+}
+
 .navbar-logo {
     height: 60px;
     border-radius: 12px;
@@ -38,3 +50,19 @@
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
+
+.navbar-logo {
+    max-height: 60px;
+  }
+  
+#documentation h5 {
+    color: #343a40;
+    font-weight: 600;
+}
+  
+
+.display-recent-complaints {
+    margin: 40px;
+    padding: 20px;
+}
+
