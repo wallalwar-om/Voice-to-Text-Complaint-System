@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, redirect, Response, url_for, session
-import base64
 import os
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
+import speech_recognition as sr
+from pydub import AudioSegment
+from io import BytesIO
+from datetime import datetime
 
 load_dotenv()
 
@@ -35,31 +38,34 @@ def home():
 
     return render_template('home.html', complaints=complaints, total_complaints=total_complaints)
 
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
+    transcribed_text = None
+
     if request.method == 'POST':
-        from datetime import datetime
         category = request.form.get('category')
-        base64_audio = request.form.get('recordedAudio')
         audio_file = request.files.get('audio_file')
+        language = request.form.get('language', 'en-IN')
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        if base64_audio:
-            header, encoded = base64_audio.split(",", 1)
-            audio_data = base64.b64decode(encoded)
-
-            doc = {
-                "category": category,
-                "recording": audio_data,
-                "recording_type": "base64",
-                "date": current_date,
-                "text": "text",
-                "status": "pending"
-            }
-            coll.insert_one(doc)
 
         if audio_file:
             binary_data = audio_file.read()
+
+            try:
+                audio = AudioSegment.from_file(BytesIO(binary_data))
+                wav_io = BytesIO()
+                audio.export(wav_io, format="wav")
+                wav_io.seek(0)
+
+                r = sr.Recognizer()
+                with sr.AudioFile(wav_io) as source:
+                    audio_data = r.record(source)
+                    transcribed_text = r.recognize_google(audio_data, language=language)
+                    
+            except Exception as e:
+                transcribed_text = f"Error in transcription: {str(e)}"
 
             doc = {
                 "category": category,
@@ -67,12 +73,13 @@ def register():
                 "filename": audio_file.filename,
                 "recording_type": "binary",
                 "date": current_date,
-                "text": "text",
+                "text": transcribed_text,
                 "status": "pending"
             }
             coll.insert_one(doc)
+
         return redirect(url_for('register', submitted='true'))
-    
+            
     return render_template('register.html')
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -151,12 +158,8 @@ def serve_audio(complaint_id):
             return "Complaint not found", 404
 
         audio_data = complaint.get("recording")
-        recording_type = complaint.get("recording_type", "binary")
 
-        if recording_type == "base64":
-            audio_data = base64.b64decode(audio_data)
-
-        return Response(audio_data, mimetype='audio/mp3')
+        return Response(audio_data, mimetype='audio/*')
     except Exception as e:
         return str(e), 500
     
@@ -174,6 +177,7 @@ def update_status(complaint_id):
             {"$set": {"status": new_status}}
         )
     return redirect(url_for('admin_dashboard'))
+
 
 @app.route('/admin/delete/<complaint_id>', methods=['POST'])
 def delete_complaint(complaint_id):

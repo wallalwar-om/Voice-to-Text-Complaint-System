@@ -19,33 +19,6 @@
   </div>
 </div>
 
-<!-- Documentation Section -->
-<div class="container my-5" id="documentation">
-  <h2 class="fw-bold mb-4 text-center">How to Use SpeakUpp</h2>
-  <div class="row">
-    <div class="col-md-6 mb-4">
-      <h5>🎤 Record Your Complaint</h5>
-      <p>Click on "Start Recording" to record your voice complaint directly in the browser. Ensure your microphone
-        access is allowed.</p>
-    </div>
-    <div class="col-md-6 mb-4">
-      <h5>📁 Upload Audio File</h5>
-      <p>If you already have a recorded audio file, just upload it in the provided field. Supported formats include
-        MP3, WAV, and WEBM.</p>
-    </div>
-    <div class="col-md-6 mb-4">
-      <h5>📂 Categorize Your Complaint</h5>
-      <p>Select the relevant category for your complaint (e.g., Water, Electricity, Garbage). This helps the admin
-        sort and respond better.</p>
-    </div>
-    <div class="col-md-6 mb-4">
-      <h5>📬 Submit and Relax</h5>
-      <p>After submission, your complaint will be logged and visible in the admin dashboard. You'll get a confirmation
-        on success.</p>
-    </div>
-  </div>
-</div>
-
 <hr class="my-5">
 
 <div class="text-center mb-3">
@@ -55,21 +28,51 @@
 <h4 class="text-center">Recent Public Complaints</h4>
 
 <div class="display-recent-complaints">
-{% if complaints %}
-<ul class="list-group mb-5">
-  {% for complaint in complaints %}
-  <li class="list-group-item">
-    <strong>{{ complaint['category'] }}</strong> —
-    {{ complaint['text'] or 'Complaint text not available.' }}
-    <br>
-    <small class="text-muted">{{ complaint['date'] }}</small>
-  </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p class="text-center text-muted">No complaints have been submitted yet.</p>
-{% endif %}
+  {% if complaints %}
+  <ul class="list-group mb-5">
+    {% for complaint in complaints %}
+    <li class="list-group-item">
+      <strong>{{ complaint['category'] }}</strong> —
+      {{ complaint['text'] or 'Complaint text not available.' }}
+      <br>
+      <small class="text-muted">{{ complaint['date'] }}</small>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-center text-muted">No complaints have been submitted yet.</p>
+  {% endif %}
 </div>
 
+
+<!-- Documentation Section -->
+<section style="padding: 2rem;">
+  <h2 style="text-align: center; margin-bottom: 2rem;">How to Use SpeakUpp</h2>
+
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem;">
+
+    <div style="flex: 1; min-width: 250px;">
+      <h4>🗂️ Register Your Complaint</h4>
+      <p>Visit the homepage and click "Register Complaint." Select a complaint category: Water, Electricity, Roads, Garbage, or Other. Select the language and upload your audio file. Click "Submit Complaint."</p>
+    </div>
+
+    <div style="flex: 1; min-width: 250px;">
+      <h4>📤 Upload Audio File</h4>
+      <p>Formats supported: MP3, WAV, WEBM, OGG. Max size: 10 MB. Make sure the selected language matches the audio. Speak clearly to ensure accurate transcription.</p>
+    </div>
+
+    <div style="flex: 1; min-width: 250px;">
+      <h4>🔐 For Admins</h4>
+      <p>Click "Admin login" to login as admin. Superadmin has got powers such as add new admins and accessing all complaints.</p>
+    </div>
+
+    <div style="flex: 1; min-width: 250px;">
+      <h4>💡 Notes</h4>
+      <p>Only audio files are accepted. Speak clearly. Make sure your file matches the selected language. For support, visit the <a href="#">Help Center</a>.</p>
+    </div>
+
+  </div>
+</section>
+
+
 {% endblock %}
-<!-- Footer -->
