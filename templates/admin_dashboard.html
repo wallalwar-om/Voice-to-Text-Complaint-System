@@ -1,15 +1,28 @@
+
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-5">
-    <a href="{{ url_for('logout') }}" class="btn btn-danger mb-3">Logout</a>
-    <h2 class="text-center mb-4">Admin Dashboard</h2>
+    <div class="d-grid d-md-block">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger mb-3">Logout</a>
+    </div>
 
     {% if session.get('role') == 'superadmin' %}
     <span class="badge bg-warning text-dark ms-2">Superadmin</span>
     {% endif %}
-    <p>
-    <h6 class="text-left mb-4">Username: <span>{{ session['admin'] }}</span></h6>
-    </p>
+    <div class="d-grid d-md-flex justify-content-md-end">
+        <p>
+        <h6 class="text-left mb-4">Username: <span>{{ session['admin'] }}</span></h6>
+        </p>
+    </div>
+
+    <hr>
+
+    <div class="d-grid d-md-flex justify-content-md-end">
+        <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-outline-secondary btn-sm">Admins</a>
+    </div>
+
+    <h2 class="text-center mb-4">Complaints</h2>
+
 
     <div class="mb-4 d-flex justify-content-between align-items-center">
         <div>
@@ -75,7 +88,7 @@
                     <form action="{{ url_for('update_status', complaint_id=complaint['_id']) }}" method="POST">
                         <button class="btn btn-sm btn-outline-primary">Change Status</button>
                     </form>
-                
+
                     {% if session['role'] == 'superadmin' %}
                     <form action="{{ url_for('delete_complaint', complaint_id=complaint['_id']) }}" method="POST"
                         onsubmit="return confirm('Are you sure you want to delete this complaint?');">
