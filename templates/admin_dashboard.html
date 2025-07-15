@@ -17,9 +17,11 @@
 
     <hr>
 
+    {% if session.get('role') == 'superadmin' %}
     <div class="d-grid d-md-flex justify-content-md-end">
         <a href="{{ url_for('superadmin_dashboard') }}" class="btn btn-outline-secondary btn-sm">Admins</a>
     </div>
+    {% endif %}
 
     <h2 class="text-center mb-4">Complaints</h2>
 
