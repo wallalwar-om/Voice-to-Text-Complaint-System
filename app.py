@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Response, url_for, session
+from flask import Flask, render_template, request, redirect, Response, url_for, session, flash
 import os
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -23,7 +23,7 @@ coll = db['complaints']
 #Insert Default Superadmin once
 admin_username = os.getenv('DEFAULT_ADMIN_USERNAME')
 admin_password = os.getenv('DEFAULT_ADMIN_PASSWORD')
-if not db.admins.find_one({"username": admin_password}):
+if not db.admins.find_one({"role": "superadmin"}):
     db.admins.insert_one({
         "username": admin_username,
         "password": admin_password,
@@ -186,3 +186,23 @@ def delete_complaint(complaint_id):
 
     db.complaints.delete_one({"_id": ObjectId(complaint_id)})
     return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/admin/dashboard/superadmindashboard')
+def superadmin_dashboard():
+
+    admins = db.admins.find()
+    return render_template('superadmin_dashboard.html', admins=admins)
+
+
+@app.route('/promote/<admin_id>')
+def promote_admin(admin_id):
+    db.admins.update_one({"_id": ObjectId(admin_id)}, {"$set": {"role": "superadmin"}})
+    flash("Admin promoted to superadmin.")
+    return redirect(url_for('superadmin_dashboard'))
+
+@app.route('/delete/<admin_id>')
+def delete_admin(admin_id):
+    db.admins.delete_one({"_id": ObjectId(admin_id)})
+    flash("Admin deleted.")
+    return redirect(url_for('superadmin_dashboard'))
