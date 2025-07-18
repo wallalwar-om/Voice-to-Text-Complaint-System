@@ -20,23 +20,51 @@ DATABASE = os.getenv('DATABASE')
 db = client[DATABASE]
 coll = db['complaints']
 
-#Insert Default Superadmin once
-admin_username = os.getenv('DEFAULT_ADMIN_USERNAME')
-admin_password = os.getenv('DEFAULT_ADMIN_PASSWORD')
-if not db.admins.find_one({"role": "superadmin"}):
-    db.admins.insert_one({
-        "username": admin_username,
-        "password": admin_password,
-        "role": "superadmin"
-    })
+
+# passing to all templates using context_processor
+@app.context_processor
+def inject_role():
+    role = db.admins.find_one({'role': 'superadmin'})
+    return dict(role=role)
+
+
+@app.route('/createsuperadmin', methods=['GET', 'POST'])
+def create_superadmin():
+
+    # existing_superadmin = db.admins.find_one({'role': 'superadmin'})
+    # if existing_superadmin:
+    #     return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        sa_username = request.form['username'].strip()
+        sa_password = request.form['password'].strip()
+        confirm_password = request.form['confirm_password'].strip()
+
+        if db.admins.find_one({"username": sa_username}):
+            return render_template('admin_register.html', error="Username already exists.")
+
+        if sa_password != confirm_password:
+            return render_template('admin_register.html', error="Passwords do not match.")
+
+        db.admins.insert_one({
+            "username": sa_username,
+            "password": sa_password,
+            "role": "superadmin"
+        })
+        return redirect(url_for('admin_login'))
+
+    return render_template('register_superadmin.html')
+    
 
 @app.route('/')
 def home():
 
     complaints = db.complaints.find().sort('date', -1).limit(5)
     total_complaints = db.complaints.count_documents({})
+    
+    role = db.admins.find_one({'role': 'superadmin'})
 
-    return render_template('home.html', complaints=complaints, total_complaints=total_complaints)
+    return render_template('home.html', complaints=complaints, total_complaints=total_complaints, role=role)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -82,8 +110,10 @@ def register():
             
     return render_template('register.html')
 
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
+
     if request.method == "POST":
         username = request.form['username'].strip()
         password = request.form['password'].strip()
@@ -97,6 +127,7 @@ def admin_login():
             return render_template('admin_login.html', error="Invalid Credentials!")
 
     return render_template('admin_login.html')
+
 
 @app.route('/admin/dashboard', methods=['GET'])
 def admin_dashboard():
@@ -118,6 +149,7 @@ def admin_dashboard():
         total_complaints=total_complaints,
         selected_category=category
     )
+
 
 @app.route('/admin/register', methods=['GET', 'POST'])
 def admin_register():
@@ -144,10 +176,12 @@ def admin_register():
 
     return render_template('admin_register.html')
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('admin_login'))
+
 
 @app.route('/audio/<complaint_id>')
 def serve_audio(complaint_id):
@@ -200,6 +234,7 @@ def promote_admin(admin_id):
     db.admins.update_one({"_id": ObjectId(admin_id)}, {"$set": {"role": "superadmin"}})
     flash("Admin promoted to superadmin.")
     return redirect(url_for('superadmin_dashboard'))
+
 
 @app.route('/delete/<admin_id>')
 def delete_admin(admin_id):

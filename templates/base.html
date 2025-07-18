@@ -31,7 +31,12 @@
       <p class="mb-1">&copy; 2025 SpeakUpp. All rights reserved.</p>
       <small>Designed for voice-based civic complaint management.</small>
       <br>
+
+      {% if not role %}
+      <a href="{{ url_for('create_superadmin') }}" class="text-light text-decoration-underline ms-2">Admin Login</a>
+      {% else %}
       <a href="{{ url_for('admin_login') }}" class="text-light text-decoration-underline ms-2">Admin Login</a>
+      {% endif %}
     </div>
   </footer>
 </body>
