@@ -1,0 +1,67 @@
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content grows to fill space */
+main {
+  flex: 1;
+}
+
+.navbar-logo {
+    height: 60px;
+    border-radius: 12px;
+}
+
+
+/* Background with animated gradient */
+.register-bg {
+    background: linear-gradient(135deg, #00c6ff, #0072ff, #ffafbd, #ffc3a0);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+}
+
+/* Gradient animation */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Form container */
+.form-wrapper {
+    width: 100%;
+    max-width: 720px;
+    /* ~75% of 960px screen */
+    min-width: 300px;
+    padding: 40px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-logo {
+    max-height: 60px;
+  }
+  
+#documentation h5 {
+    color: #343a40;
+    font-weight: 600;
+}
+  
+
+.display-recent-complaints {
+    margin: 40px;
+    padding: 20px;
+}

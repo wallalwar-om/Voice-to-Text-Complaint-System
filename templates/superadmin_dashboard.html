@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Back Button -->
+<a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary position-absolute top-0 start-0 m-3">
+  &larr; Back
+</a>
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2 class="fw-bold mb-0">Admin Management</h2>
+    <span class="badge bg-warning text-dark">Superadmin Access</span>
+  </div>
+
+  <div class="table-responsive shadow-sm rounded bg-white">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Username</th>
+          <th scope="col">Role</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for admin in admins %}
+        <tr>
+          <td>{{ admin['username'] }}</td>
+          <td>
+            <span class="badge 
+              {% if admin['role'] == 'superadmin' %}
+                bg-gradient bg-warning text-dark
+              {% else %}
+                bg-secondary
+              {% endif %}
+            ">
+              {{ admin['role']|capitalize }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex flex-wrap gap-2">
+              {% if admin['role'] != 'superadmin' %}
+              <a href="{{ url_for('promote_admin', admin_id=admin['_id']) }}"
+                 class="btn btn-sm btn-outline-success"
+                  onclick="return confirm('Promote to Superadmin?')">
+                Promote
+              </a>
+              {% endif %}
+
+              <a href="{{ url_for('delete_admin', admin_id=admin['_id']) }}"
+                 class="btn btn-sm btn-outline-danger"
+                 onclick="return confirm('Are you sure you want to delete this admin?');">
+                Delete
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

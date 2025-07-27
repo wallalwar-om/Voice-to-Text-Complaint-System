@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Back Button -->
+<a href="/" class="btn btn-outline-secondary position-absolute top-0 start-0 m-3">
+  &larr; Back
+</a>
+
+<!-- Complaint Form Section -->
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light py-5">
+  <div class="row justify-content-center w-100">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h3 class="text-center mb-4 fw-bold">Register Complaint</h3>
+
+          <form method="POST" action="/register" enctype="multipart/form-data">
+            <!-- Category -->
+            <div class="mb-3">
+              <label for="category" class="form-label">Complaint Category</label>
+              <select class="form-select" name="category" id="category" required>
+                <option value="">Select a category</option>
+                <option value="Water">Water</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Roads">Roads</option>
+                <option value="Garbage">Garbage</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Language -->
+            <div class="mb-3">
+              <label for="language" class="form-label">Preferred Language</label>
+              <select class="form-select" name="language" id="language" required>
+                <option value="">Choose a language</option>
+                <option value="en-IN">English</option>
+                <option value="hi-IN">Hindi</option>
+                <option value="mr-IN">Marathi</option>
+              </select>
+            </div>
+
+            <!-- Audio Upload -->
+            <div class="mb-3">
+              <label for="audio_file" class="form-label">Upload Audio File</label>
+              <input type="file" name="audio_file" id="audio_file" class="form-control" accept="audio/*" onchange="validateFileSize(this)" required />
+              <small class="text-muted">Supported: MP3, WAV, WEBM, OGG | Max size: 10 MB</small>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary w-100 mt-2">
+              Submit Complaint
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS: Validate file size -->
+<script>
+  function validateFileSize(input) {
+    if (input.files[0].size > 10 * 1024 * 1024) {
+      alert("Audio file must be under 10MB.");
+      input.value = "";
+    }
+  }
+</script>
+
+<!-- JS: Show alert after submission -->
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('submitted') === 'true') {
+    alert("✅ Complaint submitted successfully!");
+    const url = new URL(window.location);
+    url.searchParams.delete('submitted');
+    window.history.replaceState({}, document.title, url);
+  }
+</script>
+{% endblock %}

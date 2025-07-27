@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="container my-5">
+  <div class="row p-5 bg-white rounded-4 shadow-lg align-items-center">
+    <div class="col-lg-7">
+      <h1 class="display-4 fw-bold">Raise Your Voice, Report the Issue</h1>
+      <p class="lead mt-3">SpeakUpp helps you submit civic complaints like water supply, electricity, sanitation, and more—all through a voice-enabled interface. Join us in making local governance better!</p>
+    </div>
+    <div class="col-lg-5 text-center">
+      <a href="/register" class="btn btn-warning btn-lg fw-bold px-5 py-3">Register Complaint</a>
+    </div>
+  </div>
+</section>
+
+<!-- Total Complaints -->
+<div class="container text-center mb-5">
+  <h5>Total Complaints Received: <span class="badge bg-info text-dark">{{ total_complaints }}</span></h5>
+</div>
+
+<!-- Recent Complaints -->
+<section class="container mb-5">
+  <h4 class="text-center mb-4">Recent Public Complaints</h4>
+  {% if complaints %}
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for complaint in complaints %}
+    <div class="col">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ complaint['category'] }}</h5>
+          <p class="card-text">{{ complaint['text'] or 'Complaint text not available.' }}</p>
+        </div>
+        <div class="card-footer text-muted small">
+          Submitted on {{ complaint['date'] }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-center text-muted">No complaints have been submitted yet.</p>
+  {% endif %}
+</section>
+
+<!-- How to Use Section -->
+<section class="container mb-5">
+  <h2 class="text-center mb-4">How to Use SpeakUpp</h2>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">🗂️ Register Your Complaint</h5>
+          <p class="card-text">Click "Register Complaint," choose a category, select a language, upload audio, and submit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">📤 Upload Audio File</h5>
+          <p class="card-text">Supported formats: MP3, WAV, OGG, WEBM. Max size: 10MB. Speak clearly for better transcription.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">🔐 For Admins</h5>
+          <p class="card-text">Superadmins can add admins and manage all complaints. Click "Admin Login" to sign in.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">💡 Notes</h5>
+          <p class="card-text">Only audio files are allowed. Speak clearly. Ensure language matches audio. Need help? Visit <a href="#">Help Center</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
