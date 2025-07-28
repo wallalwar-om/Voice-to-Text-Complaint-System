@@ -53,7 +53,8 @@
             <div class="col-md-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <div class="icon-circle mb-3" style="width: 50px; height: 50px; font-size: 1.2rem; background: var(--success-gradient);">
+                        <div class="icon-circle mb-3"
+                            style="width: 50px; height: 50px; font-size: 1.2rem; background: var(--success-gradient);">
                             <i class="bi bi-check-circle-fill"></i>
                         </div>
                         <h4 class="fw-bold text-success">
@@ -66,7 +67,8 @@
             <div class="col-md-4">
                 <div class="card text-center">
                     <div class="card-body">
-                        <div class="icon-circle mb-3" style="width: 50px; height: 50px; font-size: 1.2rem; background: var(--warning-gradient);">
+                        <div class="icon-circle mb-3"
+                            style="width: 50px; height: 50px; font-size: 1.2rem; background: var(--warning-gradient);">
                             <i class="bi bi-clock-fill"></i>
                         </div>
                         <h4 class="fw-bold text-warning">
@@ -88,28 +90,28 @@
                     </div>
                     <div class="col-md-6">
                         <div class="d-flex gap-2 flex-wrap">
-                            <a href="{{ url_for('admin_dashboard') }}" 
-                               class="btn btn-sm {{ 'btn-primary' if not selected_category else 'btn-outline-primary' }}">
+                            <a href="{{ url_for('admin_dashboard') }}"
+                                class="btn btn-sm {{ 'btn-primary' if not selected_category else 'btn-outline-primary' }}">
                                 All
                             </a>
-                            <a href="{{ url_for('admin_dashboard', category='Water') }}" 
-                               class="btn btn-sm {{ 'btn-primary' if selected_category == 'Water' else 'btn-outline-primary' }}">
+                            <a href="{{ url_for('admin_dashboard', category='Water') }}"
+                                class="btn btn-sm {{ 'btn-primary' if selected_category == 'Water' else 'btn-outline-primary' }}">
                                 💧 Water
                             </a>
-                            <a href="{{ url_for('admin_dashboard', category='Electricity') }}" 
-                               class="btn btn-sm {{ 'btn-primary' if selected_category == 'Electricity' else 'btn-outline-primary' }}">
+                            <a href="{{ url_for('admin_dashboard', category='Electricity') }}"
+                                class="btn btn-sm {{ 'btn-primary' if selected_category == 'Electricity' else 'btn-outline-primary' }}">
                                 ⚡ Electricity
                             </a>
-                            <a href="{{ url_for('admin_dashboard', category='Roads') }}" 
-                               class="btn btn-sm {{ 'btn-primary' if selected_category == 'Roads' else 'btn-outline-primary' }}">
+                            <a href="{{ url_for('admin_dashboard', category='Roads') }}"
+                                class="btn btn-sm {{ 'btn-primary' if selected_category == 'Roads' else 'btn-outline-primary' }}">
                                 🛣️ Roads
                             </a>
-                            <a href="{{ url_for('admin_dashboard', category='Garbage') }}" 
-                               class="btn btn-sm {{ 'btn-primary' if selected_category == 'Garbage' else 'btn-outline-primary' }}">
+                            <a href="{{ url_for('admin_dashboard', category='Garbage') }}"
+                                class="btn btn-sm {{ 'btn-primary' if selected_category == 'Garbage' else 'btn-outline-primary' }}">
                                 🗑️ Garbage
                             </a>
-                            <a href="{{ url_for('admin_dashboard', category='Other') }}" 
-                               class="btn btn-sm {{ 'btn-primary' if selected_category == 'Other' else 'btn-outline-primary' }}">
+                            <a href="{{ url_for('admin_dashboard', category='Other') }}"
+                                class="btn btn-sm {{ 'btn-primary' if selected_category == 'Other' else 'btn-outline-primary' }}">
                                 📋 Other
                             </a>
                         </div>
@@ -154,13 +156,13 @@
                             </td>
                             <td>
                                 {% if complaint.get('text') %}
-                                    <div class="text-truncate" style="max-width: 300px;" title="{{ complaint['text'] }}">
-                                        {{ complaint['text'] }}
-                                    </div>
+                                <div class="text-truncate" style="max-width: 300px;" title="{{ complaint['text'] }}">
+                                    {{ complaint['text'] }}
+                                </div>
                                 {% else %}
-                                    <span class="text-muted fst-italic">
-                                        <i class="bi bi-volume-up me-1"></i>Audio file only
-                                    </span>
+                                <span class="text-muted fst-italic">
+                                    <i class="bi bi-volume-up me-1"></i>Audio file only
+                                </span>
                                 {% endif %}
                             </td>
                             <td>
@@ -170,33 +172,45 @@
                                 </small>
                             </td>
                             <td>
-                                <span class="badge {{ 'bg-success' if complaint.get('status') == 'Resolved' else 'bg-warning text-dark' }}">
+                                <span
+                                    class="badge {{ 'bg-success' if complaint.get('status') == 'Resolved' else 'bg-warning text-dark' }}">
                                     {{ complaint.get('status', 'Pending') }}
                                 </span>
                             </td>
+                            <!-- Complaints Table Actions (Revised) -->
                             <td>
                                 <div class="d-flex gap-1">
                                     <!-- Play Audio -->
                                     {% if complaint.get('recording') %}
-                                    <button class="btn btn-outline-primary btn-sm" 
-                                            onclick="playAudio('{{ complaint['/_id/'] }}')" title="Play Audio">
-                                        <i class="bi bi-play-fill"></i>
-                                    </button>
+                                    <audio controls style="max-width: 180px;">
+                                        <source src="{{ url_for('serve_audio', complaint_id=complaint['_id']) }}"
+                                            type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                    {% else %}
+                                    <span class="text-muted fst-italic">
+                                        <i class="bi bi-volume-mute me-1"></i>No audio
+                                    </span>
                                     {% endif %}
-                                    
+
+
                                     <!-- Toggle Status -->
-                                    <form method="POST" action="{{ url_for('update_status', complaint_id=complaint['_id']) }}" style="display: inline;">
-                                        <button type="submit" class="btn btn-outline-success btn-sm" 
-                                                title="Toggle Status">
-                                            <i class="bi bi-{{ 'check-circle' if complaint.get('status') != 'Resolved' else 'arrow-clockwise' }}"></i>
+                                    <form method="POST"
+                                        action="{{ url_for('update_status', complaint_id=complaint['_id']) }}"
+                                        style="display: inline;">
+                                        <button type="submit" class="btn btn-outline-success btn-sm"
+                                            title="Toggle Status">
+                                            <i
+                                                class="bi bi-{{ 'check-circle' if complaint.get('status') != 'Resolved' else 'arrow-clockwise' }}"></i>
                                         </button>
                                     </form>
-                                    
+
                                     <!-- Delete (Superadmin only) -->
                                     {% if session.get('role') == 'superadmin' %}
-                                    <form method="POST" action="{{ url_for('delete_complaint', complaint_id=complaint['_id']) }}" 
-                                          style="display: inline;" 
-                                          onsubmit="return confirm('Are you sure you want to delete this complaint?')">
+                                    <form method="POST"
+                                        action="{{ url_for('delete_complaint', complaint_id=complaint['_id']) }}"
+                                        style="display: inline;"
+                                        onsubmit="return confirm('Are you sure you want to delete this complaint?')">
                                         <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -204,25 +218,27 @@
                                     {% endif %}
                                 </div>
                             </td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-        
+
         {% else %}
         <div class="card text-center">
             <div class="card-body p-5">
-                <div class="icon-circle mb-4" style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); color: #6c757d;">
+                <div class="icon-circle mb-4"
+                    style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); color: #6c757d;">
                     <i class="bi bi-inbox"></i>
                 </div>
                 <h5 class="fw-bold mb-3">No Complaints Found</h5>
                 <p class="text-muted mb-0">
                     {% if selected_category %}
-                        No complaints found in the "{{ selected_category }}" category.
+                    No complaints found in the "{{ selected_category }}" category.
                     {% else %}
-                        No complaints have been submitted yet.
+                    No complaints have been submitted yet.
                     {% endif %}
                 </p>
             </div>
@@ -249,14 +265,5 @@
         </div>
     </div>
 </div>
-
-<script>
-function playAudio(complaintId) {
-    const modal = new bootstrap.Modal(document.getElementById('audioModal'));
-    const audioPlayer = document.getElementById('audioPlayer');
-    audioPlayer.src = '/audio/' + complaintId;
-    modal.show();
-}
-</script>
 
 {% endblock %}
