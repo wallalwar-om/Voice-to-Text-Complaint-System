@@ -7,17 +7,21 @@ import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
 from datetime import datetime
+# from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
+# CORS(app)
+
 
 MONGO_URI = os.getenv('MONGO_URI')
 client = MongoClient(MONGO_URI)
 
-DATABASE = os.getenv('DATABASE')
-db = client[DATABASE]
+# DATABASE = os.getenv('DATABASE')
+# db = client[DATABASE]
+db = client.get_database()
 coll = db['complaints']
 
 
@@ -252,3 +256,4 @@ def delete_admin(admin_id):
     else:
         db.admins.delete_one({"_id": ObjectId(admin_id)})
         return redirect(url_for('superadmin_dashboard'))
+
