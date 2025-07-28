@@ -1,44 +1,71 @@
 {% extends "base.html" %}
+{% block title %}Admin Login - SpeakUpp{% endblock %}
 {% block content %}
 
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-          <h3 class="text-center mb-4 fw-bold">Admin Login</h3>
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <div class="icon-circle mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <h2 class="fw-bold mb-2">Admin Login</h2>
+                            <p class="text-muted">Access the complaint management system</p>
+                        </div>
 
-          {% if error %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ error }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          {% endif %}
+                        {% if error %}
+                        <div class="alert alert-danger border-0">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <span>{{ error }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
 
-          <form method="POST">
-            <!-- Username -->
-            <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
-              <input type="text" name="username" id="username" class="form-control" required autofocus>
+                        <form method="POST">
+                            <div class="mb-4">
+                                <label for="username" class="form-label fw-semibold">
+                                    <i class="bi bi-person me-2"></i>Username
+                                </label>
+                                <input type="text" name="username" id="username" 
+                                       class="form-control" placeholder="Enter your username" required autofocus>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-semibold">
+                                    <i class="bi bi-lock me-2"></i>Password
+                                </label>
+                                <input type="password" name="password" id="password" 
+                                       class="form-control" placeholder="Enter your password" required>
+                            </div>
+
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-center">
+                            <div class="alert alert-light border-0 mb-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-shield-check me-1"></i>
+                                    Authorized personnel only
+                                </small>
+                            </div>
+                            
+                            <a href="/" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-house me-1"></i>Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" name="password" id="password" class="form-control" required>
-            </div>
-
-            <!-- Submit -->
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-          </form>
         </div>
-      </div>
-
-      <p class="text-center text-muted mt-3 small">
-        For superadmin access, please use your elevated credentials.
-      </p>
     </div>
-  </div>
-</div>
+</section>
 
 {% endblock %}

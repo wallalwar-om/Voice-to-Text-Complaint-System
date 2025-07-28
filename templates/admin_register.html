@@ -1,54 +1,238 @@
 {% extends "base.html" %}
+{% block title %}Register Admin - SpeakUpp{% endblock %}
 {% block content %}
 
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-          <h3 class="text-center fw-bold mb-4">Register New Admin</h3>
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <div class="icon-circle mb-4" style="background: var(--success-gradient);">
+                                <i class="bi bi-person-plus"></i>
+                            </div>
+                            <h3 class="fw-bold mb-2">Create New Administrator</h3>
+                            <p class="text-muted">Add a new admin account with secure credentials</p>
+                        </div>
 
-          {% if error %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ error }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          {% endif %}
+                        {% if error %}
+                        <div class="alert alert-danger border-0">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <span>{{ error }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
 
-          <form method="POST">
-            <!-- Username -->
-            <div class="mb-3">
-              <label for="username" class="form-label">Username</label>
-              <input type="text" name="username" id="username" class="form-control" required>
+                        <form method="POST" id="adminForm">
+                            <div class="mb-4">
+                                <label for="username" class="form-label fw-semibold">
+                                    <i class="bi bi-person me-2"></i>Username <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="username" id="username" 
+                                       class="form-control" placeholder="Enter unique username" required minlength="3">
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Username must be unique and at least 3 characters long
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-semibold">
+                                    <i class="bi bi-lock me-2"></i>Password <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <input type="password" name="password" id="password" 
+                                           class="form-control" placeholder="Enter secure password" required minlength="8"
+                                           onkeyup="checkPasswordStrength()">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-2" 
+                                            onclick="togglePassword('password')" style="border: none; background: none;">
+                                        <i class="bi bi-eye" id="passwordToggle"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Password Strength Indicator -->
+                                <div class="mt-2">
+                                    <div class="progress" style="height: 4px;">
+                                        <div class="progress-bar" id="strengthBar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small id="strengthText" class="text-muted">Password strength will appear here</small>
+                                </div>
+                                
+                                <!-- Password Requirements -->
+                                <div class="mt-2">
+                                    <small class="text-muted">Password must contain:</small>
+                                    <ul class="small text-muted mb-0" style="list-style: none; padding-left: 0;">
+                                        <li id="length"><i class="bi bi-x-circle text-danger me-1"></i>At least 8 characters</li>
+                                        <li id="uppercase"><i class="bi bi-x-circle text-danger me-1"></i>One uppercase letter</li>
+                                        <li id="lowercase"><i class="bi bi-x-circle text-danger me-1"></i>One lowercase letter</li>
+                                        <li id="number"><i class="bi bi-x-circle text-danger me-1"></i>One number</li>
+                                        <li id="special"><i class="bi bi-x-circle text-danger me-1"></i>One special character</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="confirm_password" class="form-label fw-semibold">
+                                    <i class="bi bi-lock-fill me-2"></i>Confirm Password <span class="text-danger">*</span>
+                                </label>
+                                <div class="position-relative">
+                                    <input type="password" name="confirm_password" id="confirm_password" 
+                                           class="form-control" placeholder="Confirm the password" required
+                                           onkeyup="checkPasswordMatch()">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-2" 
+                                            onclick="togglePassword('confirm_password')" style="border: none; background: none;">
+                                        <i class="bi bi-eye" id="confirmToggle"></i>
+                                    </button>
+                                </div>
+                                <div id="passwordMatch" class="mt-1"></div>
+                            </div>
+
+                            <div class="alert alert-info border-0 mb-4">
+                                <div class="d-flex">
+                                    <i class="bi bi-shield-check me-3 fs-4"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Administrator Privileges</h6>
+                                        <small>This account will have access to view, manage, and update complaint statuses in the system.</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                                </a>
+                                
+                                <button type="submit" class="btn btn-success" id="submitBtn" disabled>
+                                    <i class="bi bi-person-plus me-2"></i>Create Admin Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" name="password" id="password" class="form-control" required>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-3">
-              <label for="confirm_password" class="form-label">Confirm Password</label>
-              <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
-            </div>
-
-            <!-- Submit -->
-            <button type="submit" class="btn btn-primary w-100">Create Admin</button>
-          </form>
-
-          {% if session['admin'] %}
-          <div class="text-center mt-4">
-            <a href="{{ url_for('admin_dashboard') }}" class="text-decoration-none">
-              &larr; Back to Dashboard
-            </a>
-          </div>
-          {% endif %}
         </div>
-      </div>
     </div>
-  </div>
-</div>
+</section>
+
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const toggle = document.getElementById(fieldId === 'password' ? 'passwordToggle' : 'confirmToggle');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        toggle.className = 'bi bi-eye-slash';
+    } else {
+        field.type = 'password';
+        toggle.className = 'bi bi-eye';
+    }
+}
+
+function checkPasswordStrength() {
+    const password = document.getElementById('password').value;
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    
+    const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    };
+    
+    // Update requirement indicators
+    Object.keys(requirements).forEach(req => {
+        const element = document.getElementById(req);
+        const icon = element.querySelector('i');
+        if (requirements[req]) {
+            icon.className = 'bi bi-check-circle text-success me-1';
+        } else {
+            icon.className = 'bi bi-x-circle text-danger me-1';
+        }
+    });
+    
+    // Calculate strength
+    const score = Object.values(requirements).filter(Boolean).length;
+    const percentage = (score / 5) * 100;
+    
+    strengthBar.style.width = percentage + '%';
+    
+    if (score < 2) {
+        strengthBar.className = 'progress-bar bg-danger';
+        strengthText.textContent = 'Very Weak';
+        strengthText.className = 'text-danger';
+    } else if (score < 3) {
+        strengthBar.className = 'progress-bar bg-warning';
+        strengthText.textContent = 'Weak';
+        strengthText.className = 'text-warning';
+    } else if (score < 4) {
+        strengthBar.className = 'progress-bar bg-info';
+        strengthText.textContent = 'Medium';
+        strengthText.className = 'text-info';
+    } else if (score < 5) {
+        strengthBar.className = 'progress-bar bg-primary';
+        strengthText.textContent = 'Strong';
+        strengthText.className = 'text-primary';
+    } else {
+        strengthBar.className = 'progress-bar bg-success';
+        strengthText.textContent = 'Very Strong';
+        strengthText.className = 'text-success';
+    }
+    
+    checkFormValid();
+}
+
+function checkPasswordMatch() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    const matchDiv = document.getElementById('passwordMatch');
+    
+    if (confirmPassword.length > 0) {
+        if (password === confirmPassword) {
+            matchDiv.innerHTML = '<small class="text-success"><i class="bi bi-check-circle me-1"></i>Passwords match</small>';
+        } else {
+            matchDiv.innerHTML = '<small class="text-danger"><i class="bi bi-x-circle me-1"></i>Passwords do not match</small>';
+        }
+    } else {
+        matchDiv.innerHTML = '';
+    }
+    
+    checkFormValid();
+}
+
+function checkFormValid() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    const username = document.getElementById('username').value;
+    const submitBtn = document.getElementById('submitBtn');
+    
+    const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    };
+    
+    const allRequirementsMet = Object.values(requirements).every(Boolean);
+    const passwordsMatch = password === confirmPassword && confirmPassword.length > 0;
+    const usernameValid = username.length >= 3;
+    
+    if (allRequirementsMet && passwordsMatch && usernameValid) {
+        submitBtn.disabled = false;
+        submitBtn.className = 'btn btn-success';
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.className = 'btn btn-secondary';
+    }
+}
+
+// Add event listeners
+document.getElementById('username').addEventListener('keyup', checkFormValid);
+document.getElementById('confirm_password').addEventListener('keyup', checkPasswordMatch);
+</script>
 
 {% endblock %}

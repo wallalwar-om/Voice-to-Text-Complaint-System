@@ -1,85 +1,221 @@
 {% extends "base.html" %}
 {% block content %}
 
-<!-- Hero Section -->
-<section class="container my-5">
-  <div class="row p-5 bg-white rounded-4 shadow-lg align-items-center">
-    <div class="col-lg-7">
-      <h1 class="display-4 fw-bold">Raise Your Voice, Report the Issue</h1>
-      <p class="lead mt-3">SpeakUpp helps you submit civic complaints like water supply, electricity, sanitation, and more—all through a voice-enabled interface. Join us in making local governance better!</p>
+<section class="hero text-center">
+    <div class="hero-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="icon-circle mb-4">
+                        <i class="bi bi-upload"></i>
+                    </div>
+                    <h1 class="display-4 fw-bold mb-4">Submit Your Civic Concerns</h1>
+                    <p class="lead mb-5 opacity-90">Upload audio recordings of your complaints in multiple languages
+                        with AI-powered transcription and tracking</p>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <a href="{{ url_for('register') }}" class="btn btn-warning btn-lg">
+                            <i class="bi bi-cloud-upload me-2"></i>Upload Complaint
+                        </a>
+                        <a href="#how-it-works" class="btn btn-primary btn-lg">
+                            <i class="fas fa-play-circle"></i>
+                            How It Works
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-lg-5 text-center">
-      <a href="/register" class="btn btn-warning btn-lg fw-bold px-5 py-3">Register Complaint</a>
-    </div>
-  </div>
 </section>
 
-<!-- Total Complaints -->
-<div class="container text-center mb-5">
-  <h5>Total Complaints Received: <span class="badge bg-info text-dark">{{ total_complaints }}</span></h5>
-</div>
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-6 text-center">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div class="icon-circle mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h3 class="fw-bold text-primary mb-2">{{ total_complaints }}</h3>
+                        <p class="mb-0 text-muted">Complaints Submitted & Processed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<!-- Recent Complaints -->
-<section class="container mb-5">
-  <h4 class="text-center mb-4">Recent Public Complaints</h4>
-  {% if complaints %}
-  <div class="row row-cols-1 row-cols-md-2 g-4">
-    {% for complaint in complaints %}
-    <div class="col">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title">{{ complaint['category'] }}</h5>
-          <p class="card-text">{{ complaint['text'] or 'Complaint text not available.' }}</p>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Recent Community Submissions</h2>
+            <p class="text-muted">Latest audio complaints from citizens in your area</p>
         </div>
-        <div class="card-footer text-muted small">
-          Submitted on {{ complaint['date'] }}
+
+        {% if complaints %}
+        <div class="row g-4">
+            {% for complaint in complaints %}
+            <div class="col-md-6 col-xl-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary">
+                                {% if complaint['category'] == 'Water' %}💧 Water Issues
+                                {% elif complaint['category'] == 'Electricity' %}⚡ Power Supply
+                                {% elif complaint['category'] == 'Roads' %}🛣️ Infrastructure
+                                {% elif complaint['category'] == 'Garbage' %}🗑️ Waste Management
+                                {% else %}📋 General Issues
+                                {% endif %}
+                            </span>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar me-1"></i>
+                                {{ complaint['date'][:10] if complaint['date'] else 'N/A' }}
+                            </small>
+                        </div>
+
+                        <div class="complaint-content">
+                            {% if complaint['text'] %}
+                            <p class="mb-0 text-dark">
+                                {% set text_content = complaint['text']|e %}
+                                {% if text_content|length > 150 %}
+                                {{ text_content[:150] }}...
+                                {% else %}
+                                {{ text_content }}
+                                {% endif %}
+                            </p>
+                            {% else %}
+                            <p class="mb-0 text-muted fst-italic">
+                                <i class="bi bi-file-earmark-music me-2"></i>Audio complaint uploaded - transcription
+                                pending
+                            </p>
+                            {% endif %}
+                        </div>
+
+                        <div class="mt-3">
+                            <span
+                                class="badge {% if complaint.get('status') == 'Resolved' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                <i
+                                    class="bi bi-{% if complaint.get('status') == 'Resolved' %}check-circle{% else %}hourglass-split{% endif %} me-1"></i>
+                                {% if complaint.get('status') == 'Resolved' %}Issue Resolved{% else %}Under Review{%
+                                endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-      </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('register') }}" class="btn btn-outline-primary">
+                <i class="bi bi-cloud-upload me-2"></i>Submit Your Audio Complaint
+            </a>
+        </div>
+
+        {% else %}
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card text-center">
+                    <div class="card-body p-5">
+                        <div class="icon-circle mb-4"
+                            style="background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); color: #6c757d;">
+                            <i class="bi bi-inbox"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">No Complaints Submitted Yet</h5>
+                        <p class="text-muted mb-4">Be the first citizen to upload an audio complaint and help improve
+                            your community services</p>
+                        <a href="{{ url_for('register') }}" class="btn btn-primary">
+                            <i class="bi bi-cloud-upload me-2"></i>Upload First Complaint
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <p class="text-center text-muted">No complaints have been submitted yet.</p>
-  {% endif %}
 </section>
 
-<!-- How to Use Section -->
-<section class="container mb-5">
-  <h2 class="text-center mb-4">How to Use SpeakUpp</h2>
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">🗂️ Register Your Complaint</h5>
-          <p class="card-text">Click "Register Complaint," choose a category, select a language, upload audio, and submit.</p>
+<section class="section-padding" style="background: rgba(255, 255, 255, 0.5);" id="how-it-works">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">How The System Works</h2>
+            <p class="text-muted">Simple process to submit and track your civic complaints</p>
         </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">📤 Upload Audio File</h5>
-          <p class="card-text">Supported formats: MP3, WAV, OGG, WEBM. Max size: 10MB. Speak clearly for better transcription.</p>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="text-primary mb-3">
+                            <i class="bi bi-1-circle-fill fs-1"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">Select Issue Category</h6>
+                        <p class="text-muted small mb-0">Choose from Water, Roads, Electricity, Waste Management, or
+                            Other civic issues</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="card text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="text-success mb-3">
+                            <i class="bi bi-2-circle-fill fs-1"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">Choose Audio Language</h6>
+                        <p class="text-muted small mb-0">Select English, Hindi, or Marathi for accurate speech-to-text
+                            conversion</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="card text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="text-warning mb-3">
+                            <i class="bi bi-3-circle-fill fs-1"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">Upload Audio File</h6>
+                        <p class="text-muted small mb-0">Upload your pre-recorded complaint in MP3, WAV, or other audio
+                            formats</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="card text-center h-100">
+                    <div class="card-body p-4">
+                        <div class="text-info mb-3">
+                            <i class="bi bi-4-circle-fill fs-1"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">Track & Monitor</h6>
+                        <p class="text-muted small mb-0">Submit and track the status of your complaint through the
+                            system</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">🔐 For Admins</h5>
-          <p class="card-text">Superadmins can add admins and manage all complaints. Click "Admin Login" to sign in.</p>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8">
+                <div class="card bg-light border-0">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="fw-bold mb-2">
+                                    <i class="bi bi-lightbulb me-2"></i>Pro Tip for Better Results
+                                </h6>
+                                <p class="mb-0 small text-muted">
+                                    Record your complaint in a quiet environment with clear speech. Make sure to select
+                                    the correct language that matches your audio recording for accurate transcription.
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <i class="bi bi-file-earmark-music fs-1 text-muted"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">💡 Notes</h5>
-          <p class="card-text">Only audio files are allowed. Speak clearly. Ensure language matches audio. Need help? Visit <a href="#">Help Center</a>.</p>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
 
 {% endblock %}

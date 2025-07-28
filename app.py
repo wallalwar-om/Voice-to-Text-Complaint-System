@@ -28,7 +28,7 @@ def inject_role():
     return dict(role=role)
 
 
-@app.route('/createsuperadmin', methods=['GET', 'POST'])
+@app.route('/register_superadmin', methods=['GET', 'POST'])
 def create_superadmin():
 
     # existing_superadmin = db.admins.find_one({'role': 'superadmin'})
@@ -38,13 +38,13 @@ def create_superadmin():
     if request.method == 'POST':
         sa_username = request.form['username'].strip()
         sa_password = request.form['password'].strip()
-        confirm_password = request.form['confirm_password'].strip()
+        # confirm_password = request.form['confirm_password'].strip()
 
-        if db.admins.find_one({"username": sa_username}):
-            return render_template('admin_register.html', error="Username already exists.")
+        # if db.admins.find_one({"username": sa_username}):
+        #     return render_template('admin_register.html', error="Username already exists.")
 
-        if sa_password != confirm_password:
-            return render_template('admin_register.html', error="Passwords do not match.")
+        # if sa_password != confirm_password:
+        #     return render_template('admin_register.html', error="Passwords do not match.")
 
         db.admins.insert_one({
             "username": sa_username,
@@ -62,11 +62,13 @@ def home():
     complaints = db.complaints.find().sort('date', -1).limit(5)
     total_complaints = db.complaints.count_documents({})
 
-    return render_template('home.html', complaints=complaints, total_complaints=total_complaints)
+    role = db.admins.find_one({'role': 'superadmin'})
+
+    return render_template('home.html', complaints=complaints, total_complaints=total_complaints, role=role)
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def register_complaint():
+def register():
 
     transcribed_text = None
 
@@ -157,13 +159,13 @@ def admin_register():
     if request.method == 'POST':
         username = request.form['username'].strip()
         password = request.form['password'].strip()
-        confirm_password = request.form['confirm_password'].strip()
+        # confirm_password = request.form['confirm_password'].strip()
 
-        if db.admins.find_one({"username": username}):
-            return render_template('admin_register.html', error="Username already exists.")
+        # if db.admins.find_one({"username": username}):
+        #     return render_template('admin_register.html', error="Username already exists.")
 
-        if password != confirm_password:
-            return render_template('admin_register.html', error="Passwords do not match.")
+        # if password != confirm_password:
+        #     return render_template('admin_register.html', error="Passwords do not match.")
 
         db.admins.insert_one({
             "username": username,
@@ -222,9 +224,15 @@ def delete_complaint(complaint_id):
 
 @app.route('/admin/dashboard/superadmindashboard')
 def superadmin_dashboard():
+   
+    admins = list(db.admins.find())
 
-    admins = db.admins.find()
-    return render_template('superadmin_dashboard.html', admins=admins)
+    # Convert ObjectIds to strings for safe template rendering
+    for admin in admins:
+        admin['_id'] = str(admin['_id'])
+
+    return render_template('superadmin_dashboard.html', admins=admins, role=session.get('role'))
+
 
 
 @app.route('/promote/<admin_id>')

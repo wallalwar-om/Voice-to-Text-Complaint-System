@@ -1,80 +1,135 @@
 {% extends "base.html" %}
+{% block title %}Submit Complaint - SpeakUpp{% endblock %}
 {% block content %}
 
-<!-- Back Button -->
-<a href="/" class="btn btn-outline-secondary position-absolute top-0 start-0 m-3">
-  &larr; Back
-</a>
-
-<!-- Complaint Form Section -->
-<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light py-5">
-  <div class="row justify-content-center w-100">
-    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-body">
-          <h3 class="text-center mb-4 fw-bold">Register Complaint</h3>
-
-          <form method="POST" action="/register" enctype="multipart/form-data">
-            <!-- Category -->
-            <div class="mb-3">
-              <label for="category" class="form-label">Complaint Category</label>
-              <select class="form-select" name="category" id="category" required>
-                <option value="">Select a category</option>
-                <option value="Water">Water</option>
-                <option value="Electricity">Electricity</option>
-                <option value="Roads">Roads</option>
-                <option value="Garbage">Garbage</option>
-                <option value="Other">Other</option>
-              </select>
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="icon-circle mb-4">
+                <i class="bi bi-cloud-upload"></i>
             </div>
-
-            <!-- Language -->
-            <div class="mb-3">
-              <label for="language" class="form-label">Preferred Language</label>
-              <select class="form-select" name="language" id="language" required>
-                <option value="">Choose a language</option>
-                <option value="en-IN">English</option>
-                <option value="hi-IN">Hindi</option>
-                <option value="mr-IN">Marathi</option>
-              </select>
-            </div>
-
-            <!-- Audio Upload -->
-            <div class="mb-3">
-              <label for="audio_file" class="form-label">Upload Audio File</label>
-              <input type="file" name="audio_file" id="audio_file" class="form-control" accept="audio/*" onchange="validateFileSize(this)" required />
-              <small class="text-muted">Supported: MP3, WAV, WEBM, OGG | Max size: 10 MB</small>
-            </div>
-
-            <!-- Submit -->
-            <button type="submit" class="btn btn-primary w-100 mt-2">
-              Submit Complaint
-            </button>
-          </form>
+            <h2 class="fw-bold mb-3">Submit Your Audio Complaint</h2>
+            <p class="text-muted">Upload your pre-recorded complaint and get automatic transcription with AI technology</p>
         </div>
-      </div>
+
+        {% if request.args.get('submitted') == 'true' %}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                <div class="alert alert-success border-0">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-check-circle-fill fs-3"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Audio Complaint Uploaded Successfully!</h6>
+                            <p class="mb-0">Your complaint has been processed and transcribed. Our team will review it shortly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <form method="POST" action="/register" enctype="multipart/form-data">
+                            
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label for="category" class="form-label fw-semibold">
+                                        <i class="bi bi-tags me-2"></i>Issue Category <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" name="category" id="category" required>
+                                        <option value="">Choose your complaint category</option>
+                                        <option value="Water">💧 Water Supply & Quality Issues</option>
+                                        <option value="Electricity">⚡ Power Supply & Electrical Problems</option>
+                                        <option value="Roads">🛣️ Roads & Infrastructure Issues</option>
+                                        <option value="Garbage">🗑️ Waste Management & Sanitation</option>
+                                        <option value="Other">📋 Other Civic Issues</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="language" class="form-label fw-semibold">
+                                        <i class="bi bi-translate me-2"></i>Audio Language <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" name="language" id="language" required>
+                                        <option value="">Select your audio language</option>
+                                        <option value="en-IN">🇮🇳 English (India)</option>
+                                        <option value="hi-IN">🇮🇳 Hindi (हिंदी)</option>
+                                        <option value="mr-IN">🇮🇳 Marathi (मराठी)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="audio_file" class="form-label fw-semibold">
+                                    <i class="bi bi-file-earmark-music me-2"></i>Upload Audio File <span class="text-danger">*</span>
+                                </label>
+                                <input type="file" name="audio_file" id="audio_file" 
+                                       class="form-control" accept="audio/*" required>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Supported formats: MP3, WAV, WEBM, OGG | Maximum size: 10MB
+                                </div>
+                            </div>
+
+                            <div class="alert alert-primary border-0" style="background: rgba(13, 110, 253, 0.1); border-left: 4px solid #0d6efd !important;">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="bi bi-lightbulb fs-4 text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-2 text-primary">Tips for Better Audio Processing:</h6>
+                                        <ul class="mb-0 small text-dark">
+                                            <li>Speak clearly and at a moderate pace in your chosen language</li>
+                                            <li>Record in a quiet environment with minimal background noise</li>
+                                            <li>Ensure the selected language matches your audio recording language</li>
+                                            <li>Keep your audio file under 10MB for faster processing</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                                <a href="/" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                                </a>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-cloud-upload me-2"></i>Upload & Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8">
+                <div class="card" style="background: rgba(255, 248, 220, 0.8); border: 1px solid #ffeaa7;">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="fw-bold mb-2" style="color: #d63031;">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Need Help with Audio Upload?
+                                </h6>
+                                <p class="mb-0 small" style="color: #636e72;">
+                                    Make sure your device has proper audio recording capabilities. You can record audio using your phone's voice recorder or any audio recording app, then upload the saved file here.
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <i class="bi bi-file-earmark-arrow-up fs-1" style="color: #fdcb6e;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+</section>
 
-<!-- JS: Validate file size -->
-<script>
-  function validateFileSize(input) {
-    if (input.files[0].size > 10 * 1024 * 1024) {
-      alert("Audio file must be under 10MB.");
-      input.value = "";
-    }
-  }
-</script>
-
-<!-- JS: Show alert after submission -->
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('submitted') === 'true') {
-    alert("✅ Complaint submitted successfully!");
-    const url = new URL(window.location);
-    url.searchParams.delete('submitted');
-    window.history.replaceState({}, document.title, url);
-  }
-</script>
 {% endblock %}
