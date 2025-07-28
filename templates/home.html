@@ -80,7 +80,17 @@
                                 {{ text_content }}
                                 {% endif %}
                             </p>
+
+                            {% if complaint['text'] and 'Error in transcription' in complaint['text'] %}
+                            <form action="{{ url_for('user_delete_complaint', complaint_id=complaint['_id']) }}"
+                                method="POST" class="mt-2">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                            {% endif %}
                             {% else %}
+
                             <p class="mb-0 text-muted fst-italic">
                                 <i class="bi bi-file-earmark-music me-2"></i>Audio complaint uploaded - transcription
                                 pending

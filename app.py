@@ -226,6 +226,12 @@ def delete_complaint(complaint_id):
     return redirect(url_for('admin_dashboard'))
 
 
+@app.route('/delete/<complaint_id>', methods=['POST'])
+def user_delete_complaint(complaint_id):
+    db.complaints.delete_one({'_id': ObjectId(complaint_id)})
+    return redirect(url_for('home'))
+
+
 @app.route('/admin/dashboard/superadmindashboard')
 def superadmin_dashboard():
    
