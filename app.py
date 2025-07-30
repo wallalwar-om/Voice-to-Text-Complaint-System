@@ -165,8 +165,8 @@ def admin_register():
         password = request.form['password'].strip()
         # confirm_password = request.form['confirm_password'].strip()
 
-        # if db.admins.find_one({"username": username}):
-        #     return render_template('admin_register.html', error="Username already exists.")
+        if db.admins.find_one({"username": username}):
+            return render_template('admin_register.html', error="Username already exists.")
 
         # if password != confirm_password:
         #     return render_template('admin_register.html', error="Passwords do not match.")
