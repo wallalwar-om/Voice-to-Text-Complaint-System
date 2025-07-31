@@ -65,7 +65,7 @@ This setup ensures secure bootstrapping and strict role-based access in decentra
     - Complaint status (e.g., `Under Review`)
     - Delete option (if failed)
 
-![=](./assets/assets/home_recent_complaints.png)
+![=](./assets/home_recent_complaints.png)
 
 - 🌓 **User Interface Enhancements**
   - Responsive layout with modern card-based UI
