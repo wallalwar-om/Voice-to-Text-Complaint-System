@@ -7,6 +7,32 @@ A web application that allows users to submit complaints using their voice. The 
 
 ---
 
+## 📚 Table of Contents
+
+- [Scenario](#-scenario)
+- [Features](#-features)
+- [Tech Stack](#️-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started Locally](#-getting-started-locally)
+- [Hosting & Deployment](#-hosting--deployment)
+- [Roles](#-roles)
+- [Feedback](#-feedback)
+- [Notes](#notes)
+
+
+## 📖 Scenario
+
+This project simulates a complaint management system in a team-based environment where multiple admins may be operating from different locations (e.g., branch offices, campuses, or local offices).
+
+To ensure a structured hierarchy and secure management:
+
+- A **Superadmin** must be registered first.
+- Without a Superadmin, no other admin can be registered or access the system.
+- This allows central control and prevents unauthorized or premature access.
+- Admins can be promoted to Superadmin only by an existing Superadmin.
+
+This setup ensures secure bootstrapping and strict role-based access in decentralized environments.
+
 ## 🚀 Features
 
 - 🎙️ **Voice-to-Text Complaint Submission**
@@ -140,6 +166,7 @@ MONGO_URI=mongodb://localhost:27017
 
 ## 👥 Roles
 
+  - (When there is superadmin, then the 'Admin Panel' button shows 'Admin Setup' and when click, opens a page to register a superadmin)
 - **Superadmin**
   - Can register new admins
   - Can promote admins to superadmins
@@ -156,3 +183,4 @@ If you have any suggestions, feel free to open an issue or reach out!
 ## Notes
 ⚠️ Important Note on Commit History
 Due to a force push (git push --force) during development, all previous commits have been overwritten.
+Current version is stable and complete.
