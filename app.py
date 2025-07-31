@@ -7,14 +7,11 @@ import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
 from datetime import datetime
-# from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
-# CORS(app)
-
 
 MONGO_URI = os.getenv('MONGO_URI')
 client = MongoClient(MONGO_URI)
