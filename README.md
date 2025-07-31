@@ -71,6 +71,7 @@ voice-to-text-complaint-system/
 ├── .env                     # Environment variables
 ├── requirements.txt
 └── README.md
+```
 
 ## 🧪 Getting Started Locally
 
