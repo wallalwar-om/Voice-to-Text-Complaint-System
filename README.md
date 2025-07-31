@@ -1,7 +1,7 @@
 
 # 🗣️ Voice-to-Text Complaint System
 
-![Screenshot](./8cc180a5-6484-47d7-895c-1d1ccfe44e1a.png)
+![Screenshot](./assets/8cc180a5-6484-47d7-895c-1d1ccfe44e1b.png)
 
 A web application that allows users to submit complaints using their voice. The audio is transcribed to text and stored along with the audio file. Admins can log in to manage, review, and respond to complaints from a secure dashboard.
 
@@ -9,12 +9,47 @@ A web application that allows users to submit complaints using their voice. The 
 
 ## 🚀 Features
 
-- 🎙️ Voice-based complaint submission
-- 📜 Real-time transcription to text
-- 🛠️ Admin login and dashboard
-- 📂 Audio and complaint history management
-- 🔐 Role-based access (Superadmin, Admin)
-- 🧾 Complaint categorization and filtering
+- 🎙️ **Voice-to-Text Complaint Submission**
+  - Users record or upload an audio complaint
+  - Speech is transcribed to text using speech recognition
+  - Complaint is stored in MongoDB Atlas along with metadata
+
+- 📋 **Complaint Validation**
+  - If transcription fails (e.g., music file or unclear input), the user sees an error message
+  - Users can **delete invalid complaints themselves** if transcription fails
+
+- 🧑‍💼 **Admin & Superadmin Dashboard**
+  - View all complaints with metadata (category, date, status)
+  - Play back audio directly on the dashboard
+  - Promote admins to superadmins
+  - Filter complaints by category/status
+
+  - Admin_dash
+  [App Screenshot](./assets/admin_dash_admin.png)
+
+  - Superadmin_dash
+  [App Screenshot](./assets/admin_dash_superadmin.png)
+
+- 🌐 **Public Complaint Feed**
+  - Displays **5–10 most recent complaints** on the homepage
+  - Each complaint card shows:
+    - Category (tag)
+    - Submission date
+    - Audio transcription preview
+    - Complaint status (e.g., `Under Review`)
+    - Delete option (if failed)
+
+![Screenshot](./assets/8cc180a5-6484-47d7-895c-1d1ccfe44e1a.png)
+
+- 🌓 **User Interface Enhancements**
+  - Responsive layout with modern card-based UI
+  - Dark/Light mode support
+  - Minimalist top nav with links to:
+    - Submit Complaint
+    - Admin Panel
+    - Dashboard
+
+
 
 ---
 
@@ -27,9 +62,14 @@ A web application that allows users to submit complaints using their voice. The 
 
 ---
 
-## 📸 Screenshot
-
-![App Screenshot](./assets/8cc180a5-6484-47d7-895c-1d1ccfe44e1a.png)
+voice-to-text-complaint-system/
+│
+├── static/                  # CSS, JS, and audio files
+├── templates/               # HTML templates
+├── app.py                   # Main Flask application
+├── .env                     # Environment variables
+├── requirements.txt
+└── README.md
 
 ---
 
@@ -111,3 +151,8 @@ MONGO_URI=mongodb://localhost:27017
 ## 💬 Feedback
 
 If you have any suggestions, feel free to open an issue or reach out!
+
+
+## Notes
+⚠️ Important Note on Commit History
+Due to a force push (git push --force) during development, all previous commits have been overwritten.
