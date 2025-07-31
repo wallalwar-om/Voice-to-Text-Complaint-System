@@ -60,8 +60,9 @@ A web application that allows users to submit complaints using their voice. The 
 - **Database:** MongoDB Atlas (or local MongoDB)
 - **Deployment:** Render
 
----
+## 📁 Project Structure
 
+```text
 voice-to-text-complaint-system/
 │
 ├── static/                  # CSS, JS, and audio files
@@ -70,8 +71,6 @@ voice-to-text-complaint-system/
 ├── .env                     # Environment variables
 ├── requirements.txt
 └── README.md
-
----
 
 ## 🧪 Getting Started Locally
 
