@@ -1,7 +1,7 @@
 
 # 🗣️ Voice-to-Text Complaint System
 
-![Screenshot](./assets/8cc180a5-6484-47d7-895c-1d1ccfe44e1b.png)
+![Home Page](./assets/home_page.png)
 
 A web application that allows users to submit complaints using their voice. The audio is transcribed to text and stored along with the audio file. Admins can log in to manage, review, and respond to complaints from a secure dashboard.
 
@@ -65,7 +65,7 @@ This setup ensures secure bootstrapping and strict role-based access in decentra
     - Complaint status (e.g., `Under Review`)
     - Delete option (if failed)
 
-![Screenshot](./assets/8cc180a5-6484-47d7-895c-1d1ccfe44e1a.png)
+![=](./assets/assets/home_recent_complaints.png)
 
 - 🌓 **User Interface Enhancements**
   - Responsive layout with modern card-based UI
