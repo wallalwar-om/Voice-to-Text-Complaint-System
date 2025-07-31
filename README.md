@@ -166,7 +166,7 @@ MONGO_URI=mongodb://localhost:27017
 
 ## 👥 Roles
 
-  - (When there is superadmin, then the 'Admin Panel' button shows 'Admin Setup' and when click, opens a page to register a superadmin)
+  - (When there no is superadmin, then the 'Admin Panel' button shows 'Admin Setup' and when click, opens a page to register a superadmin)
 - **Superadmin**
   - Can register new admins
   - Can promote admins to superadmins
