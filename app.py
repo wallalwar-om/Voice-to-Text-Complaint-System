@@ -7,6 +7,7 @@ import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
 from datetime import datetime
+import threading
 
 load_dotenv()
 
@@ -68,6 +69,33 @@ def home():
     return render_template('home.html', complaints=complaints, total_complaints=total_complaints, role=role)
 
 
+def process_audio_in_background(audio_binary, filename, category, language, current_date):
+    try:
+        audio = AudioSegment.from_file(BytesIO(audio_binary))
+        wav_io = BytesIO()
+        audio.export(wav_io, format="wav")
+        wav_io.seek(0)
+
+        r = sr.Recognizer()
+        with sr.AudioFile(wav_io) as source:
+            audio_data = r.record(source)
+            transcribed_text = r.recognize_google(audio_data, language=language)
+
+    except:
+        transcribed_text = f"Error in transcription: Somethings Wrong With the File!"
+
+    doc = {
+        "category": category,
+        "recording": audio_binary,
+        "filename": filename,
+        "recording_type": "binary",
+        "date": current_date,
+        "text": transcribed_text,
+        "status": "pending"
+        }
+    coll.insert_one(doc)
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 
@@ -81,32 +109,14 @@ def register():
 
         if audio_file:
             binary_data = audio_file.read()
+            filename = audio_file.filename
 
-            try:
-                audio = AudioSegment.from_file(BytesIO(binary_data))
-                wav_io = BytesIO()
-                audio.export(wav_io, format="wav")
-                wav_io.seek(0)
-
-                r = sr.Recognizer()
-                with sr.AudioFile(wav_io) as source:
-                    audio_data = r.record(source)
-                    transcribed_text = r.recognize_google(audio_data, language=language)
-                    
-            except Exception as e:
-                transcribed_text = f"Error in transcription: {str(e)}"
-
-            doc = {
-                "category": category,
-                "recording": binary_data,
-                "filename": audio_file.filename,
-                "recording_type": "binary",
-                "date": current_date,
-                "text": transcribed_text,
-                "status": "pending"
-            }
-            coll.insert_one(doc)
-
+            # Start background thread
+            threading.Thread(
+                target=process_audio_in_background,
+                args=(binary_data, filename, category, language, current_date)
+            ).start()
+            
         return redirect(url_for('register', submitted='true'))
             
     return render_template('register.html')
